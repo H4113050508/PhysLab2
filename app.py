@@ -263,13 +263,26 @@ def hitung_modul_umum(slug):
             # Tak hingga pada jarak benda = fokus adalah hasil fisika yang sah,
             # tetapi bukan nilai numerik yang aman untuk tabel/grafik.
             y = None
+        # Kurva dasar memakai 11 titik pada seluruh rentang modul. Tambahkan
+        # titik percobaan yang benar-benar dipilih pengguna agar tabel dan grafik
+        # ikut menandai setiap percobaan, bukan selalu terlihat identik.
         series = []
         lo, hi = item["min"], item["max"]
         for i in range(11):
             v = lo + (hi-lo)*i/10
             sx, sy, _ = calc(v)
             if math.isfinite(sy):
-                series.append({"x": sx, "y": sy})
+                series.append({"x": sx, "y": sy, "selected": False})
+
+        selected_point = next(
+            (point for point in series if math.isclose(point["x"], x, rel_tol=1e-9, abs_tol=1e-12)),
+            None
+        )
+        if selected_point is not None:
+            selected_point["selected"] = True
+        else:
+            series.append({"x": x, "y": y, "selected": True})
+        series.sort(key=lambda point: point["x"])
         notes = {
             "energi": "Asumsi: irradiansi 100% = 1000 W/m² dan luas panel 0,02 m²; daya = irradiansi × luas × efisiensi.",
             "pemanasan": "Model pedagogis linear: suhu awal 25 °C; pengaruh konsentrasi dikurangi faktor tutupan awan. Bukan model iklim atmosfer lengkap.",
