@@ -1,0 +1,169 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhysLab 2.0 | Virtual Physics Laboratory</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-icon">P</div>
+            <div>
+                <h2>PhysLab</h2>
+                <small>VIRTUAL LAB 2.0</small>
+            </div>
+        </div>
+
+        <p class="nav-label">MENU UTAMA</p>
+        <a class="nav-item active" href="#beranda">⌂ &nbsp; Beranda</a>
+        <a class="nav-item" href="#kelas">▤ &nbsp; Kelas SMA</a>
+        <a class="nav-item" href="#praktikum">⚗ &nbsp; Praktikum</a>
+        <a class="nav-item" href="#hasil">▥ &nbsp; Hasil Percobaan</a>
+
+        <div class="sidebar-bottom">
+            <span class="status-dot"></span>
+            Mode lokal aktif
+            <small>Dirancang untuk pembelajaran fisika</small>
+        </div>
+    </aside>
+
+    <main class="main-content" id="beranda">
+        <header class="topbar">
+            <div>
+                <p class="eyebrow">VIRTUAL PHYSICS LABORATORY</p>
+                <h1>Belajar Fisika dengan Bereksperimen.</h1>
+                <p class="subtitle">
+                    Uji variabel, amati fenomena, dan analisis data
+                    melalui laboratorium virtual.
+                </p>
+            </div>
+            <div class="local-badge">● OFFLINE READY</div>
+        </header>
+
+        <section class="welcome-card">
+            <div class="welcome-copy">
+                <span class="tag">LABORATORIUM DIGITAL</span>
+                <h2>Dari teori menuju eksperimen.</h2>
+                <p>
+                    Ubah parameter percobaan, amati hasil pengukuran,
+                    dan temukan hubungan antarvariabel fisika.
+                </p>
+                <a class="primary-button" href="#praktikum">Jelajahi Praktikum ↗</a>
+            </div>
+            <div class="orbit-art" aria-hidden="true">
+                <div class="orbit orbit-one"></div>
+                <div class="orbit orbit-two"></div>
+                <div class="orbit-center">v₀</div>
+                <span class="orbit-point point-one"></span>
+                <span class="orbit-point point-two"></span>
+            </div>
+        </section>
+
+        
+<section class="section" id="kelas">
+    <div class="section-heading">
+        <div>
+            <p class="eyebrow">JELAJAHI MATERI</p>
+            <h2>Pilih Kelas</h2>
+        </div>
+        <span class="muted">Kurikulum PhysLab</span>
+    </div>
+
+    <div class="class-grid">
+        <article class="class-card">
+            <span class="class-number">01</span>
+            <h3>SMA Kelas X</h3>
+            <p>Besaran dan Pengukuran, Notasi Ilmiah dan Angka Penting, Energi Alternatif, Pemanasan Global.</p>
+            <a class="class-link" href="#praktikum">Lihat materi →</a>
+        </article>
+
+        <article class="class-card">
+            <span class="class-number">02</span>
+            <h3>SMA Kelas XI</h3>
+            <p>Vektor, Kinematika, Optik, Fluida, Termodinamika, Gelombang, dan Dinamika.</p>
+            <a class="class-link" href="#praktikum">Lihat materi →</a>
+        </article>
+
+        <article class="class-card">
+            <span class="class-number">03</span>
+            <h3>SMA Kelas XII</h3>
+            <p>Listrik, Magnet, Teknologi Digital, Relativitas, Fisika Inti, dan materi lainnya.</p>
+            <a class="class-link" href="#praktikum">Lihat materi →</a>
+        </article>
+    </div>
+</section>
+
+        <section class="section" id="praktikum">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">20 MODUL PEMBELAJARAN</p>
+                    <h2>Praktikum Fisika SMA</h2>
+                </div>
+                <span class="muted">Pilih modul untuk mulai bereksperimen</span>
+            </div>
+
+            <div class="module-grid">
+                {% for kelas, label in [('X','Kelas X'), ('XI','Kelas XI'), ('XII','Kelas XII')] %}
+                <div class="module-group">
+                    <h3>{{ label }}</h3>
+                    <div class="module-cards">
+                        {% for m in modules if m.kelas == kelas %}
+                        <article class="module-card">
+                            <div class="module-card-top">
+                                <span class="tag">{{ m.category }}</span>
+                                <span class="module-dot">●</span>
+                            </div>
+                            <h4>{{ m.title }}</h4>
+                            <p>{{ m.description }}</p>
+                            <a class="primary-button" href="/modul/{{ m.slug }}">Buka Modul →</a>
+                        </article>
+                        {% endfor %}
+                        {% if kelas == 'XI' %}
+                        <article class="module-card featured-module">
+                            <div class="module-card-top"><span class="tag">Kinematika</span><span class="module-dot">★</span></div>
+                            <h4>Gerak Parabola</h4>
+                            <p>Modul unggulan dengan animasi lintasan, tabel data, pengukuran, dan grafik perbandingan.</p>
+                            <a class="primary-button" href="/gerak-parabola">Buka Praktikum →</a>
+                        </article>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section class="section" id="hasil">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">WORKSPACE</p>
+                    <h2>Ruang Analisis</h2>
+                </div>
+            </div>
+            <div class="analysis-preview">
+                <div>
+                    <span class="preview-icon">▤</span>
+                    <h3>Tabel Pengukuran</h3>
+                    <p>Data percobaan beserta satuan dan hasil perhitungan.</p>
+                </div>
+                <div>
+                    <span class="preview-icon">⌁</span>
+                    <h3>Grafik Variabel</h3>
+                    <p>Visualisasi hubungan antarvariabel berdasarkan data.</p>
+                </div>
+                <div>
+                    <span class="preview-icon">✓</span>
+                    <h3>Analisis Percobaan</h3>
+                    <p>Bandingkan hasil eksperimen virtual dengan teori.</p>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            PhysLab 2.0 · Laboratorium Virtual Fisika · Mode lokal
+        </footer>
+    </main>
+</body>
+</html>

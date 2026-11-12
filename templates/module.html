@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ module.title }} | PhysLab 2.0</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<main class="main-content module-main">
+  <a class="class-link" href="/">← Kembali ke Dashboard</a>
+  <header class="topbar module-topbar">
+    <div>
+      <p class="eyebrow">PHYSICS VIRTUAL LABORATORY · KELAS {{ module.kelas }}</p>
+      <h1>{{ module.title }}</h1>
+      <p class="subtitle">{{ module.description }}</p>
+    </div>
+    <div class="local-badge">MODE LOKAL</div>
+  </header>
+
+  <section class="section lab-guide">
+    <p class="eyebrow">PANDUAN PRAKTIKUM</p>
+    <h2>Tujuan dan Prosedur</h2>
+    <p><strong>Tujuan:</strong> mempelajari hubungan antarvariabel pada topik {{ module.title }} melalui model fisika interaktif.</p>
+    <ol>
+      <li>Ubah parameter pada panel percobaan.</li>
+      <li>Geser komponen alat pada visualisasi 2D jika tersedia.</li>
+      <li>Klik <strong>Jalankan Percobaan</strong> untuk menghitung hasil dengan Python.</li>
+      <li>Amati ringkasan hasil, tabel, grafik, dan analisis.</li>
+    </ol>
+    <p class="model-note">Catatan ilmiah: visualisasi alat merupakan model konseptual dan perhitungan mengikuti model ideal sederhana, bukan pengukuran alat laboratorium nyata.</p>
+  </section>
+
+  <section class="section">
+    <div class="section-heading"><div><p class="eyebrow">PENGATURAN EKSPERIMEN</p><h2>Variabel Percobaan</h2></div></div>
+    <div class="module-control-panel">
+      <label for="moduleValue"><span id="moduleParamLabel">{{ module.param_label }}</span> <span>(<span id="moduleParamUnit">{{ module.param_unit }}</span>)</span></label>
+      <div class="module-input-row" style="display:none">
+        <input id="moduleValue" type="number" value="{{ module.default }}" min="{{ module.min }}" max="{{ module.max }}" step="{{ module.step }}">
+        <button id="moduleRun" class="primary-button" type="button">Jalankan Percobaan</button>
+        <button id="moduleReset" class="secondary-button" type="button">Reset</button>
+      </div>
+      <div style="display:none;margin-top:12px">
+        <label for="moduleSlider">Pengatur interaktif: <strong id="moduleSliderValue">{{ module.default }} {{ module.param_unit }}</strong></label>
+        <input id="moduleSlider" type="range" min="{{ module.min }}" max="{{ module.max }}" step="{{ module.step }}" value="{{ module.default }}" style="width:100%;accent-color:#3267e8">
+        <small>Geser pengatur ini untuk mengubah variabel dan memperbarui hasil, tabel, serta grafik.</small>
+      </div>
+      <div id="moduleSecondaryControl" class="module-secondary-control" style="display:none;margin-top:16px;padding:14px;border:1px solid #dbe3ef;border-radius:12px;background:#f8fafc">
+        <p class="eyebrow" style="margin-top:0">PENGATUR ALAT KEDUA</p>
+        <div id="moduleAuxControl"></div>
+        <small id="moduleAuxHint">Ubah kondisi alat kedua untuk melihat pengaruhnya pada hasil model.</small>
+      </div>
+      <div id="moduleInstrumentReadings" class="module-result-grid" style="margin-top:14px" aria-live="polite">
+        <div class="module-result"><span>Instrumen</span><strong id="moduleMeterPrimary">Siap</strong></div>
+        <div class="module-result"><span>Pembacaan model</span><strong id="moduleMeterSecondary">—</strong></div>
+      </div>
+      <small>Rentang: {{ module.min }}–{{ module.max }} {{ module.param_unit }}. Perhitungan dilakukan oleh backend Python lokal.</small>
+      <p id="moduleStatus" class="status-message" role="status">Siap melakukan percobaan.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-heading"><div><p class="eyebrow">HASIL PERCOBAAN</p><h2>Ringkasan Hasil</h2></div></div>
+    <div class="module-result-grid">
+      <div class="module-result"><span>Variabel masukan</span><strong id="moduleInputResult">—</strong></div>
+      <div class="module-result"><span id="moduleOutputLabel">Variabel keluaran</span><strong id="moduleOutputResult">—</strong></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-heading"><div><p class="eyebrow">LABORATORIUM VIRTUAL</p><h2>Alat dan Proses 2D</h2><p class="muted">Gunakan kontrol pada alat virtual untuk mengubah variabel, lalu amati pembacaan instrumen, tabel, dan grafik.</p></div></div>
+    <div class="graph-panel"><canvas id="moduleLabCanvas" width="900" height="400" aria-label="Alat praktikum fisika interaktif 2D" style="display:block;width:100%;height:auto;touch-action:none;cursor:grab"></canvas></div>
+    <p id="moduleLabNote" class="muted">Visualisasi model akan tampil setelah halaman dimuat.</p>
+  </section>
+
+  <section class="section" id="opticsLabSection" hidden>
+    <div class="section-heading"><div><p class="eyebrow">PRAKTIKUM KHUSUS</p><h2>Meja Optik Interaktif</h2><p class="muted">Seret benda, lensa, dan layar di sepanjang rel optik.</p></div></div>
+    <div class="module-control-panel" style="margin-bottom:14px">
+      <label for="opticsFocusRange">Jarak fokus lensa: <strong id="opticsFocusValue">10 cm</strong></label>
+      <input id="opticsFocusRange" type="range" min="5" max="25" step="1" value="10" style="width:100%">
+      <small>Seret benda, lensa, atau layar pada meja optik. Geser fokus dengan pengatur ini.</small>
+    </div>
+    <div class="graph-panel"><canvas id="opticsLabCanvas" width="900" height="390" aria-label="Meja optik interaktif" style="display:block;width:100%;height:auto;touch-action:none;cursor:grab"></canvas></div>
+    <div class="metrics-grid">
+      <div class="metric-card"><span class="muted">Jarak benda</span><strong id="opticsObjectDistance">20 cm</strong></div>
+      <div class="metric-card"><span class="muted">Jarak bayangan</span><strong id="opticsImageDistance">20 cm</strong></div>
+      <div class="metric-card"><span class="muted">Perbesaran</span><strong id="opticsMagnification">−1×</strong></div>
+    </div>
+    <p id="opticsLabStatus" class="muted" aria-live="polite">Siapkan percobaan optik.</p>
+    <button type="button" id="opticsLabReset" class="secondary-button">Reset alat optik</button>
+  </section>
+
+  <section class="section">
+    <div class="section-heading"><div><p class="eyebrow">LABORATORIUM VIRTUAL 3D</p><h2>Simulator Laboratorium Orang Pertama</h2><p class="muted">Masuk ke dalam ruang praktikum: gerakkan kamera seperti game simulator, jelajahi ruangan, dan dekati alat untuk mengamati model.</p></div></div>
+    <div class="module-control-panel" style="margin-bottom:12px">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <button id="labEnterSimulator" class="primary-button" type="button">Fokus ke Simulator</button>
+        <button id="labResetCamera" class="secondary-button" type="button">Reset Posisi</button>
+        <span id="labCameraStatus" class="muted" aria-live="polite">Mode orang pertama aktif</span>
+      </div>
+      <p class="muted" style="margin-bottom:0"><strong>Kontrol:</strong> klik kanvas, lalu gunakan <kbd>W</kbd>/<kbd>A</kbd>/<kbd>S</kbd>/<kbd>D</kbd> untuk berjalan. Seret mouse untuk melihat sekeliling. Seret badan alat untuk memindahkannya; seret kontrol alat untuk mengubah pengaturan. Pilih alat untuk memutar atau menghapusnya. Tahan <kbd>Shift</kbd> sambil menyeret area alat utama untuk mengubah variabel modul. Klik tombol Fokus ke Simulator jika keyboard belum merespons.</p>
+    </div>
+    <div class="graph-panel" style="position:relative;overflow:hidden;background:#0b1220"><canvas id="moduleLabCanvas3D" width="1000" height="560" tabindex="0" aria-label="Simulator laboratorium fisika 3D sudut pandang orang pertama" style="display:block;width:100%;height:auto;cursor:crosshair;touch-action:none;outline:none"></canvas>
+      <div id="gameControlPanel" style="position:absolute;left:14px;bottom:14px;width:min(360px,calc(100% - 28px));padding:12px;border:1px solid rgba(255,255,255,.22);border-radius:14px;background:rgba(8,15,30,.93);color:#f8fafc;box-shadow:0 8px 24px #0005;font-size:13px">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><strong>🧪 MEJA PRAKTIKUM · {{ module.title|upper }}</strong><button id="gamePanelToggle" type="button">Sembunyikan</button></div>
+        <p style="color:#dbeafe;margin:8px 0">Peralatan untuk modul ini sudah disiapkan di atas meja. Klik alat untuk memilih, seret untuk memindahkan, dan seret bagian kontrolnya untuk mengoperasikan. Gunakan WASD untuk bergerak dan seret area kosong untuk melihat sekeliling.</p>
+        <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:8px"><button id="gameRun" type="button" style="background:#38bdf8;color:#082f49;font-weight:700">▶ Jalankan praktikum</button><button id="gameRotateTool" type="button">↻ Putar alat</button><button id="gameReset" type="button">Reset meja</button></div>
+        <small id="assemblyStatus" style="display:block;color:#cbd5e1;margin-top:7px">Semua alat praktikum sudah tersedia di meja. Pilih alat untuk mulai.</small>
+      </div></div>
+    <p id="moduleLab3DNote" class="muted">Jelajahi laboratorium dari sudut pandang orang pertama.</p>
+  </section>
+
+  <section class="section">
+    <div class="section-heading"><div><p class="eyebrow">PANDUAN KERJA</p><h2>Petunjuk Praktikum</h2><p class="muted">Ikuti prosedur berikut sebelum menjalankan percobaan virtual.</p></div></div>
+    <div class="module-control-panel">
+      <h3>Tujuan</h3><p>{{ guide.objective }}</p>
+      <h3>Alat dan bahan</h3><p>{{ guide.tools }}</p>
+      <h3>Langkah kerja</h3>
+      <ol>{% for step in guide.steps %}<li>{{ step }}</li>{% endfor %}</ol>
+      <h3>Variabel yang diamati</h3><p>{{ guide.variables }}</p>
+      <h3>Keselamatan kerja</h3><p>{{ guide.safety }}</p>
+      <p class="model-note"><strong>Catatan:</strong> Prosedur pada modul komputasional (Fisika Modern) merupakan eksperimen berbasis model, bukan penggunaan sumber atau peralatan berbahaya.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-heading"><div><p class="eyebrow">VISUALISASI DATA</p><h2>Grafik Hubungan Variabel</h2></div></div>
+    <div class="graph-panel"><canvas id="moduleGraph" width="900" height="330" aria-label="Grafik hubungan variabel"></canvas></div>
+    <p id="moduleGraphNote" class="muted">Grafik akan tampil setelah percobaan dijalankan.</p>
+  </section>
+  <div id="moduleAnalysis" class="module-graph-note">Analisis akan muncul setelah percobaan dijalankan.</div>
+
+  <section class="section">
+    <div class="section-heading"><div><p class="eyebrow">DATA NUMERIK</p><h2>Tabel Hasil Model</h2></div><button id="moduleCsv" class="secondary-button" type="button" disabled>Ekspor CSV</button></div>
+    <div class="table-wrap"><table class="results-table"><thead><tr><th>No.</th><th>{{ module.param_label }} ({{ module.param_unit }})</th><th id="moduleTableOutputHeader">Hasil keluaran</th></tr></thead><tbody id="moduleTable"><tr><td colspan="3">Jalankan percobaan untuk menghasilkan data.</td></tr></tbody></table></div>
+  </section>
+
+  <section class="section">
+    <div class="section-heading"><div><p class="eyebrow">ANALISIS</p><h2>Pertanyaan Refleksi</h2></div></div>
+    <ol class="analysis-questions"><li>Apa yang terjadi pada variabel keluaran ketika nilai {{ module.param_label|lower }} diubah?</li><li>Apakah hubungan pada grafik cenderung meningkat, menurun, atau tidak linear?</li><li>Sebutkan satu asumsi model yang mungkin berbeda dari kondisi eksperimen nyata.</li></ol>
+    <label for="moduleConclusion">Kesimpulan percobaan</label>
+    <textarea id="moduleConclusion" rows="4" placeholder="Tuliskan kesimpulan berdasarkan tabel dan grafik..."></textarea>
+    <button id="moduleSaveConclusion" class="secondary-button" type="button">Simpan kesimpulan di halaman</button>
+    <p id="moduleConclusionStatus" class="muted" aria-live="polite"></p>
+  </section>
+  <footer>PhysLab 2.0 · Modul {{ module.title }} · Berjalan pada server lokal</footer>
+</main>
+<script id="physlab-module-data" type="application/json">{{ module|tojson }}</script>
+<script>window.PHYSLAB_MODULE = JSON.parse(document.getElementById("physlab-module-data").textContent);</script>
+<script src="{{ url_for('static', filename='module.js') }}"></script>
+
+</body>
+</html>

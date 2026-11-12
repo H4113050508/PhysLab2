@@ -1,0 +1,315 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Gerak Parabola | PhysLab 2.0</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<main class="main-content" style="margin:0 auto;max-width:1100px">
+    <a class="class-link" href="/">← Kembali ke Dashboard</a>
+
+    <header class="topbar" style="margin-top:24px">
+        <div>
+            <p class="eyebrow">PHYSICS VIRTUAL LABORATORY</p>
+            <h1>Praktikum Gerak Parabola</h1>
+            <p class="subtitle">Amati lintasan dan analisis hasil pengukuran.</p>
+        </div>
+        <div class="local-badge">MODE LOKAL</div>
+    </header>
+
+    <section class="section">
+        <div class="section-heading">
+            <div>
+                <p class="eyebrow">PANDUAN PRAKTIKUM</p>
+                <h2>Gerak Parabola</h2>
+            </div>
+        </div>
+
+        <h3>Tujuan Percobaan</h3>
+        <ul>
+            <li>Mengamati lintasan benda yang bergerak secara parabola.</li>
+            <li>Menyelidiki pengaruh kecepatan awal dan sudut peluncuran terhadap lintasan.</li>
+            <li>Menganalisis hubungan waktu, posisi, dan kecepatan benda.</li>
+        </ul>
+
+        <h3>Dasar Teori</h3>
+        <p>
+            Gerak parabola merupakan perpaduan gerak horizontal beraturan
+            dan gerak vertikal yang dipengaruhi percepatan gravitasi.
+            Dalam model ideal ini, hambatan udara diabaikan dan benda
+            mendarat pada ketinggian yang sama dengan titik peluncuran.
+        </p>
+
+        <div class="analysis-preview">
+            <div>
+                <h3>Gerak horizontal</h3>
+                <p>x = v₀ cos(θ) × t</p>
+                <p>vₓ = v₀ cos(θ)</p>
+            </div>
+            <div>
+                <h3>Gerak vertikal</h3>
+                <p>y = v₀ sin(θ) × t − ½gt²</p>
+                <p>vᵧ = v₀ sin(θ) − gt</p>
+            </div>
+        </div>
+
+        <h3>Prosedur Percobaan</h3>
+        <ol>
+            <li>Tentukan kecepatan awal, sudut peluncuran, dan gravitasi.</li>
+            <li>Jalankan percobaan untuk mengamati lintasan benda.</li>
+            <li>Amati perubahan posisi horizontal dan vertikal terhadap waktu.</li>
+            <li>Catat hasil pengamatan dan bandingkan dengan prediksi teori.</li>
+            <li>Analisis grafik, kemudian tuliskan kesimpulan.</li>
+        </ol>
+
+        <p class="subtitle">
+            Catatan: model awal mengabaikan hambatan udara dan mengasumsikan
+            titik peluncuran serta pendaratan berada pada ketinggian yang sama.
+        </p>
+    </section>
+
+    <section class="section">
+        <div class="section-heading">
+            <div>
+                <p class="eyebrow">01 / PERSIAPAN</p>
+                <h2>Parameter Percobaan</h2>
+            </div>
+        </div>
+
+        <div class="analysis-preview">
+            <div>
+                <label for="velocity">Kecepatan awal (m/s)</label>
+                <input id="velocity" type="number" min="1" max="100"
+                       value="20" step="1">
+            </div>
+            <div>
+                <label for="angle">Sudut peluncuran (°)</label>
+                <input id="angle" type="number" min="1" max="89"
+                       value="45" step="1">
+            </div>
+            <div>
+                <label for="gravity">Gravitasi (m/s²)</label>
+                <input id="gravity" type="number" min="1" max="20"
+                       value="9.81" step="0.01">
+            </div>
+        </div>
+
+        <div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap">
+            <button id="runExperiment" class="primary-button" type="button">
+                Jalankan Percobaan
+            </button>
+            <button id="resetExperiment" type="button">Reset</button>
+            <button id="exportCsv" type="button" disabled>Ekspor CSV</button>
+        </div>
+        <p id="experimentStatus" role="status" class="subtitle">
+            Atur parameter sebelum memulai.
+        </p>
+    </section>
+
+    <section class="section">
+        <div class="section-heading">
+            <div>
+                <p class="eyebrow">02 / PENGAMATAN</p>
+                <h2>Lintasan Benda</h2>
+            </div>
+        </div>
+        <div class="experiment-card" style="display:block">
+            <canvas id="trajectoryCanvas" width="800" height="360"
+                    style="width:100%;height:auto;display:block"
+                    aria-label="Visualisasi lintasan benda"></canvas>
+        </div>
+    </section>
+
+    <section class="section" id="measurementLab">
+        <div class="section-heading">
+            <div>
+                <p class="eyebrow">03 / ALAT UKUR VIRTUAL</p>
+                <h2>Pengamatan Posisi Benda</h2>
+            </div>
+        </div>
+
+        <p>
+            Pilih waktu pengamatan untuk melihat posisi benda berdasarkan
+            model gerak parabola. Catat hasilnya sebagai data pengamatan.
+        </p>
+
+        <div class="analysis-preview">
+            <div>
+                <label for="observationTime">Waktu pengamatan (s)</label>
+                <input id="observationTime" type="number"
+                       min="0" step="0.01" value="0">
+            </div>
+            <div>
+                <h3>Posisi horizontal</h3>
+                <p id="observedX">— m</p>
+            </div>
+            <div>
+                <h3>Posisi vertikal</h3>
+                <p id="observedY">— m</p>
+            </div>
+        </div>
+
+      
+<div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:16px">
+    <button id="measurePosition" class="primary-button" type="button">
+        Amati Posisi
+    </button>
+
+    <button id="recordObservation" type="button" disabled>
+        Catat Hasil Pengamatan
+    </button>
+
+    <button id="clearObservations" type="button">
+        Hapus Data Pengamatan
+    </button>
+
+    <button id="startAutoMeasurement" type="button">
+        Mulai Pengukuran Otomatis
+    </button>
+
+    <button id="stopAutoMeasurement" type="button" disabled>
+        Hentikan Pengukuran Otomatis
+    </button>
+</div>
+
+
+        <p id="measurementStatus" class="subtitle" role="status">
+            Jalankan percobaan terlebih dahulu untuk memulai pengukuran.
+        </p>
+
+        <h3>Catatan Pengamatan Mandiri</h3>
+        <div style="overflow-x:auto;background:white;border-radius:12px;padding:12px">
+            <table style="width:100%;border-collapse:collapse;text-align:left">
+                <thead>
+                    
+<tr>
+    <th>No.</th>
+    <th>Waktu (s)</th>
+    <th>X Pengamatan (m)</th>
+    <th>Y Pengamatan (m)</th>
+    <th>X Teori (m)</th>
+    <th>Y Teori (m)</th>
+    <th>Selisih X (m)</th>
+    <th>Selisih Y (m)</th>
+</tr>
+
+                </thead>
+                <tbody id="observationsTable">
+                    <tr>
+                        <td colspan="4">Belum ada hasil pengamatan yang dicatat.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="section" id="observationAnalysis">
+        <div class="section-heading">
+            <div>
+                <p class="eyebrow">ANALISIS DATA</p>
+                <h2>Grafik Teori vs Pengamatan</h2>
+            </div>
+        </div>
+
+        <p>
+            Garis menunjukkan prediksi teori, sedangkan titik menunjukkan
+            data yang kamu catat melalui alat ukur virtual.
+        </p>
+
+        <div class="experiment-card" style="display:block">
+            <h3>Posisi horizontal terhadap waktu</h3>
+            <canvas id="comparisonXGraph"
+                    style="width:100%;height:auto;display:block"
+                    aria-label="Grafik perbandingan posisi horizontal"></canvas>
+        </div>
+
+        <div class="experiment-card" style="display:block;margin-top:16px">
+            <h3>Posisi vertikal terhadap waktu</h3>
+            <canvas id="comparisonYGraph"
+                    style="width:100%;height:auto;display:block"
+                    aria-label="Grafik perbandingan posisi vertikal"></canvas>
+        </div>
+
+        <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:16px">
+            <p><span style="color:#2563eb">━</span> Garis: prediksi teori</p>
+            <p><span style="color:#dc2626">●</span> Titik: data pengamatan</p>
+        </div>
+
+        <p id="comparisonStatus" class="subtitle">
+            Catat data pengamatan untuk melihat perbandingan.
+        </p>
+    </section>
+
+    <section class="section">
+        <div class="section-heading">
+            <div>
+                <p class="eyebrow">03 / HASIL</p>
+                <h2>Hasil Perhitungan</h2>
+            </div>
+        </div>
+        <div class="analysis-preview">
+            <div><h3>Waktu total</h3><p id="totalTime">— s</p></div>
+            <div><h3>Tinggi maksimum</h3><p id="maxHeight">— m</p></div>
+            <div><h3>Jarak horizontal</h3><p id="range">— m</p></div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="section-heading">
+            <div>
+                <p class="eyebrow">04 / DATA EKSPERIMEN</p>
+                <h2>Tabel Pengamatan</h2>
+            </div>
+        </div>
+        <div style="overflow-x:auto;background:white;border-radius:12px;padding:12px">
+            <table style="width:100%;border-collapse:collapse;text-align:left">
+                <thead>
+                    <tr>
+                        <th>Waktu (s)</th>
+                        <th>Posisi X (m)</th>
+                        <th>Posisi Y (m)</th>
+                        <th>Kecepatan X (m/s)</th>
+                        <th>Kecepatan Y (m/s)</th>
+                    </tr>
+                </thead>
+                <tbody id="resultsTable">
+                    <tr><td colspan="5">Belum ada data.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="section-heading">
+            <div>
+                <p class="eyebrow">05 / ANALISIS GRAFIK</p>
+                <h2>Grafik Variabel</h2>
+            </div>
+        </div>
+        <div class="analysis-preview">
+            <div>
+                <h3>Posisi X terhadap waktu</h3>
+                <canvas id="xGraph" width="360" height="220"
+                        style="width:100%;height:auto"></canvas>
+            </div>
+            <div>
+                <h3>Posisi Y terhadap waktu</h3>
+                <canvas id="yGraph" width="360" height="220"
+                        style="width:100%;height:auto"></canvas>
+            </div>
+            <div>
+                <h3>Lintasan Y terhadap X</h3>
+                <canvas id="pathGraph" width="360" height="220"
+                        style="width:100%;height:auto"></canvas>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

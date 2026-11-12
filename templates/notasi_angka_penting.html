@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ module.title }} | PhysLab 2.0</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    .na-wrap{max-width:1100px;margin:28px auto;padding:0 20px 60px}.na-card{background:#fff;border:1px solid #dbe3ef;border-radius:16px;padding:22px;margin:18px 0;box-shadow:0 8px 24px #0f172a0a}.na-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}.na-card label{display:block;font-weight:650;margin:10px 0 6px}.na-card input,.na-card select{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:9px;font:inherit}.na-btn{border:0;border-radius:9px;padding:11px 16px;background:#2563eb;color:white;font-weight:700;cursor:pointer;margin-top:12px}.na-output{padding:14px;background:#eff6ff;border-radius:10px;margin-top:14px;line-height:1.8;overflow-wrap:anywhere}.na-muted{color:#64748b}.na-formula{font-size:1.25rem;font-weight:750;color:#1d4ed8}.na-tabs{display:flex;gap:8px;flex-wrap:wrap}.na-tabs a{padding:8px 12px;background:#eaf0fb;border-radius:8px;text-decoration:none;color:#1e40af;font-weight:650}.na-list li{margin:7px 0;line-height:1.5}.na-feedback{font-weight:650;margin-top:10px}
+  </style>
+</head>
+<body>
+<main class="na-wrap">
+  <a class="class-link" href="/">← Kembali ke Dashboard</a>
+  <header class="topbar module-topbar"><div><p class="eyebrow">PHYSICS VIRTUAL LABORATORY · KELAS X</p><h1>{{ module.title }}</h1><p class="subtitle">{{ module.description }}</p></div><div class="local-badge">MODE LOKAL</div></header>
+  <nav class="na-tabs"><a href="#materi">Ringkasan Materi</a><a href="#konversi">Konversi</a><a href="#angka-penting">Angka Penting</a><a href="#operasi">Operasi</a><a href="#latihan">Latihan</a></nav>
+  <section class="na-card" id="measurement-bench">
+    <p class="eyebrow">MEJA PRAKTIKUM VIRTUAL</p><h2>Peralatan Pengukuran</h2>
+    <p class="na-muted">Peralatan disiapkan di meja sejak awal: penggaris, jangka sorong, mikrometer sekrup, neraca digital, dan benda uji. Visual ini merupakan ilustrasi perspektif dengan proporsi pembelajaran, bukan model CAD bersertifikat.</p>
+    <canvas id="notasiLab3D" width="1000" height="340" style="display:block;width:100%;height:auto;border-radius:12px;background:linear-gradient(#dce8f3,#a9bacb);"></canvas>
+  </section>
+  <section class="na-card" id="materi"><p class="eyebrow">KONSEP DASAR</p><h2>1. Notasi Ilmiah</h2><p>Notasi ilmiah menyatakan bilangan sebagai koefisien dikalikan dengan pangkat sepuluh. Nilai mutlak koefisien harus sekurang-kurangnya 1 dan kurang dari 10.</p><div class="na-formula">a × 10<sup>n</sup> &nbsp; dengan &nbsp; 1 ≤ |a| &lt; 10</div><ul class="na-list"><li>Eksponen positif: koma desimal digeser ke kanan saat kembali ke bentuk biasa.</li><li>Eksponen negatif: koma desimal digeser ke kiri saat kembali ke bentuk biasa.</li><li>Contoh: 450.000 = 4,5 × 10<sup>5</sup>; 0,00032 = 3,2 × 10<sup>−4</sup>.</li></ul>
+  <h2>2. Angka Penting</h2><ul class="na-list"><li>Semua angka bukan nol adalah angka penting.</li><li>Nol di antara angka bukan nol termasuk angka penting (1002 memiliki 4 AP).</li><li>Nol di depan angka bukan nol bukan angka penting (0,0045 memiliki 2 AP).</li><li>Nol di belakang koma setelah angka bukan nol termasuk angka penting (2,300 memiliki 4 AP).</li><li>Nol di belakang bilangan bulat tanpa tanda desimal bersifat ambigu; notasi ilmiah memperjelasnya.</li></ul></section>
+  <section class="na-card" id="konversi"><p class="eyebrow">KALKULATOR 01</p><h2>Konversi Notasi Ilmiah</h2><p class="na-muted">Masukkan bilangan desimal atau notasi ilmiah, misalnya 0,000456 atau 4.56e-4.</p><label for="convertValue">Bilangan</label><input id="convertValue" value="0.000456" inputmode="decimal"><button class="na-btn" id="convertBtn">Konversi</button><div class="na-output" id="convertOutput" aria-live="polite">Hasil konversi akan muncul di sini.</div></section>
+  <section class="na-card" id="angka-penting"><p class="eyebrow">KALKULATOR 02</p><h2>Identifikasi dan Pembulatan Angka Penting</h2><div class="na-grid"><div><label for="sigValue">Bilangan</label><input id="sigValue" value="0.004560" inputmode="decimal"></div><div><label for="sigDigits">Bulatkan menjadi (AP)</label><select id="sigDigits"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option><option>15</option></select></div></div><button class="na-btn" id="roundBtn">Hitung angka penting</button><div class="na-output" id="roundOutput" aria-live="polite">Jumlah angka penting dan hasil pembulatan akan muncul di sini.</div></section>
+  <section class="na-card" id="operasi"><p class="eyebrow">KALKULATOR 03</p><h2>Operasi Hasil Pengukuran</h2><div class="na-grid"><div><label for="opA">Bilangan pertama</label><input id="opA" value="12.35" inputmode="decimal"></div><div><label for="opB">Bilangan kedua</label><input id="opB" value="2.1" inputmode="decimal"></div><div><label for="operator">Operasi</label><select id="operator"><option value="add">Penjumlahan (+)</option><option value="subtract">Pengurangan (−)</option><option value="multiply" selected>Perkalian (×)</option><option value="divide">Pembagian (÷)</option></select></div></div><button class="na-btn" id="operationBtn">Hitung operasi</button><div class="na-output" id="operationOutput" aria-live="polite">Hasil dan aturan angka penting akan muncul di sini.</div></section>
+  <section class="na-card" id="panduan-praktikum">
+    <p class="eyebrow">PANDUAN KERJA</p><h2>Petunjuk Praktikum Pengukuran</h2>
+    <p><strong>Tujuan:</strong> Membaca hasil pengukuran, menyatakan hasil dengan notasi ilmiah, dan menentukan angka penting.</p>
+    <p><strong>Alat dan bahan:</strong> Penggaris, jangka sorong, mikrometer sekrup, neraca digital, serta benda uji berbentuk balok dan silinder.</p>
+    <ol class="na-list">
+      <li>Periksa kondisi dan titik nol setiap alat ukur sebelum digunakan.</li>
+      <li>Ukur panjang benda menggunakan penggaris. Catat nilai beserta satuannya dan resolusi skala.</li>
+      <li>Ukur diameter luar benda silinder dengan jangka sorong. Baca skala utama dan skala nonius.</li>
+      <li>Ukur diameter atau ketebalan benda kecil dengan mikrometer sekrup. Baca skala utama dan skala putar.</li>
+      <li>Ulangi setiap pengukuran sedikitnya tiga kali pada posisi berbeda, lalu catat seluruh hasil.</li>
+      <li>Masukkan hasil pengukuran ke kalkulator angka penting; ubah ke notasi ilmiah dan lakukan pembulatan sesuai ketelitian.</li>
+      <li>Bandingkan hasil antaralat dan tulis kesimpulan tentang resolusi serta ketidakpastian pengukuran.</li>
+    </ol>
+    <p><strong>Variabel yang diamati:</strong> panjang, diameter, massa, resolusi alat, dan jumlah pengulangan.</p>
+    <p><strong>Keselamatan kerja:</strong> Jangan menekan rahang jangka sorong atau mikrometer terlalu kuat. Pegang benda uji dengan stabil dan jauhkan alat ukur dari tepi meja.</p>
+  </section>
+  <section class="na-card" id="latihan"><p class="eyebrow">UJI PEMAHAMAN</p><h2>Latihan Singkat</h2><div class="na-grid"><div><p><strong>1.</strong> Bentuk ilmiah dari 0,00072 adalah ...</p><select id="q1"><option value="">Pilih jawaban</option><option value="a">7,2 × 10⁻⁴</option><option value="b">7,2 × 10⁴</option><option value="c">72 × 10⁻⁵</option></select></div><div><p><strong>2.</strong> Jumlah angka penting pada 0,05020 adalah ...</p><select id="q2"><option value="">Pilih jawaban</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></div><div><p><strong>3.</strong> Hasil 2,4 × 3,12 sesuai aturan AP adalah ...</p><select id="q3"><option value="">Pilih jawaban</option><option value="7,5">7,5</option><option value="7,49">7,49</option><option value="7,488">7,488</option></select></div></div><button class="na-btn" id="checkQuiz">Periksa jawaban</button><p class="na-feedback" id="quizFeedback" aria-live="polite"></p></section>
+  <p class="na-muted">Catatan: kalkulator menggunakan aturan pembulatan setengah ke atas. Untuk nol di belakang bilangan bulat tanpa koma desimal, jumlah angka penting dapat ambigu; tuliskan dalam notasi ilmiah agar jelas.</p>
+</main>
+<script src="{{ url_for('static', filename='notasi_angka_penting.js') }}"></script>
+</body></html>
